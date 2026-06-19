@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeopardy Clase - Repaso Interactivo (Optimizada para Proyector)</title>
+  
+  <!-- Carga de fuente moderna y legible para proyectores -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Paleta de alto contraste para proyección en salas iluminadas */
+      --bg-color: #030712; /* Fondo casi negro puro para evitar lavado del color en modo oscuro */
+      --bg-panel: rgba(17, 24, 39, 0.94); /* Alta opacidad para máxima legibilidad del texto */
+      --border-color: rgba(255, 255, 255, 0.15); /* Bordes más marcados */
+      
+      /* Colores y degradados súper brillantes */
+      --primary-glow: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      --accent-grad: linear-gradient(135deg, #8b5cf6 0%, #d8b4fe 100%);
+      --success-grad: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      --danger-grad: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+      
+      --accent-color: #a78bfa;
+      --success-color: #10b981;
+      --danger-color: #f87171;
+      
+      --text-light: #ffffff; 
+      --text-muted: #d1d5db; 
+      --text-dark: #0f172a;
+      
+      --card-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+      --modal-shadow: 0 0 60px rgba(0, 242, 254, 0.12), 0 30px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    /* TEMA CLARO: Predeterminado para proyector. Altísima legibilidad incluso con luz natural */
+    body.light-theme {
+      --bg-color: #f8fafc; /* Fondo blanco-grisáceo de alta reflectancia */
+      --bg-panel: rgba(255, 255, 255, 0.98);
+      --border-color: rgba(15, 23, 42, 0.18);
+      
+      --accent-color: #6d28d9;
+      --success-color: #047857;
+      --danger-color: #b91c1c;
+      
+      --text-light: #0f172a; /* Texto negro azulado de alto contraste */
+      --text-muted: #334155;
+      --text-dark: #ffffff;
+      
+      --card-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+      --modal-shadow: 0 0 50px rgba(0, 0, 0, 0.15), 0 30px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Reset básico y ajuste de pantalla */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-light);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0.75rem;
+      overflow: hidden; /* Bloquea el scroll para mantener la presentación limpia */
+      transition: background-color 0.3s ease, color 0.3s ease;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 40%);
+    }
+
+    /* Contenedor principal sin barras de desplazamiento */
+    .app-container {
+      max-width: 1920px;
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Cabecera compacta */
+    header {
+      height: 8vh;
+      min-height: 55px;
+      max-height: 75px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1.25rem;
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 0.4rem;
+      box-shadow: var(--card-shadow);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .logo-container h1 {
+      font-size: 1.6rem;
+      font-weight: 900;
+      background: var(--primary-glow);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-container p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .controls-panel {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn-tool {
+      background: rgba(120, 120, 120, 0.12);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-tool:hover {
+      background: rgba(120, 120, 120, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-tool.active-tool {
+      background: var(--primary-glow);
+      color: var(--text-dark);
+      border-color: transparent;
+    }
+
+    .btn-rules {
+      background: var(--accent-grad);
+      color: #ffffff;
+      border: none;
+    }
+    .btn-rules:hover {
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.45);
+    }
+
+    /* Botón Sorteador de Turno */
+    .draw-turn-container {
+      display: flex;
+      justify-content: center;
+      height: 6vh;
+      min-height: 40px;
+      max-height: 55px;
+      margin-bottom: 0.4rem;
+    }
+
+    .btn-draw-turn {
+      background: var(--accent-grad);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 2.5rem;
+      font-size: 1.15rem;
+      font-weight: 900;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-draw-turn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    .btn-draw-turn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Marcador Superior de Equipos (10 Equipos) */
+    .scoreboard-container {
+      height: 12vh;
+      min-height: 80px;
+      max-height: 110px;
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .scoreboard-container.roulette-active .team-card {
+      transition: none !important;
+    }
+
+    .team-card {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.5rem 0.25rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+    }
+
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary-glow);
+      opacity: 0.5;
+    }
+
+    /* Resaltar equipo activo (Click para destacar) */
+    .team-card.highlighted {
+      border-color: #fbbf24;
+      border-width: 3px;
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.55);
+      transform: translateY(-2px) scale(1.04);
+      z-index: 5;
+      background: rgba(251, 191, 36, 0.12);
+    }
+
+    body.light-theme .team-card.highlighted {
+      border-color: #d97706;
+      box-shadow: 0 0 25px rgba(217, 119, 6, 0.4);
+      background: rgba(251, 191, 36, 0.18);
+    }
+
+    .team-card.highlighted::before {
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+      opacity: 1;
+      height: 6px;
+    }
+
+    .team-name-wrapper {
+      margin-bottom: 0.1rem;
+    }
+
+    .team-name {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 800; 
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px dashed transparent;
+      padding: 1px 3px;
+      border-radius: 4px;
+      cursor: pointer;
+      max-width: 95%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .team-name:hover {
+      border-bottom-color: var(--text-muted);
+      color: var(--text-light);
+      background: rgba(120, 120, 120, 0.08);
+    }
+
+    .team-name:focus {
+      outline: none;
+      border-bottom-color: #4facfe;
+      color: var(--text-light);
+      background: rgba(120, 120, 120, 0.15);
+    }
+
+    .team-score {
+      font-size: 1.8rem; 
+      font-weight: 900; 
+      color: var(--text-light);
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .team-score:hover {
+      color: #00f2fe;
+    }
+
+    body.light-theme .team-score:hover {
+      color: #0284c7;
+    }
+
+    /* Tablero Principal */
+    .board-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      grid-template-rows: 9vh repeat(5, 1fr); 
+      gap: 0.5rem;
+      min-height: 0; 
+      margin-bottom: 0.25rem;
+    }
+
+    .grid-header {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      min-height: 0;
+      box-shadow: var(--card-shadow);
+    }
+
+    .grid-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 5%;
+      width: 90%;
+      height: 3px;
+      background: var(--primary-glow);
+    }
+
+    .header-index {
+      font-size: 0.7rem;
+      font-weight: 900;
+      color: #00f2fe;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.1rem;
+    }
+
+    body.light-theme .header-index {
+      color: #0284c7;
+    }
+
+    .header-name {
+      font-size: 0.95rem;
+      font-weight: 800; 
+      line-height: 1.15;
+      color: var(--text-light);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Botones de preguntas */
+    .grid-btn {
+      background: rgba(120, 120, 120, 0.05); 
+      border: 2px solid var(--border-color); 
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      overflow: hidden;
+      color: var(--text-light);
+      min-height: 0;
+    }
+
+    body.light-theme .grid-btn {
+      background: rgba(255, 255, 255, 0.82);
+      border-color: rgba(15, 23, 42, 0.1);
+    }
+
+    .grid-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--primary-glow);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 0;
+    }
+
+    .grid-btn:hover:not(.played) {
+      transform: scale(1.02);
+      border-color: rgba(0, 242, 254, 0.6);
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.25);
+    }
+
+    .grid-btn:hover:not(.played)::before {
+      opacity: 0.08;
+    }
+
+    .btn-index {
+      font-size: 1.7rem; 
+      font-weight: 900; 
+      position: relative;
+      z-index: 1;
+      color: var(--text-light);
+      transition: color 0.2s ease;
+    }
+
+    .grid-btn:hover:not(.played) .btn-index {
+      color: #00f2fe;
+    }
+
+    body.light-theme .grid-btn:hover:not(.played) .btn-index {
+      color: #0284c7;
+    }
+
+    /* Pregunta jugada (Descarte) */
+    .grid-btn.played {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.03);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    body.light-theme .grid-btn.played {
+      background: rgba(0, 0, 0, 0.04);
+      border-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .grid-btn.played .btn-index {
+      color: rgba(120, 120, 120, 0.2);
+      text-decoration: line-through;
+    }
+
+    .grid-btn.played::after {
+      content: '✓';
+      position: absolute;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: rgba(120, 120, 120, 0.35);
+      bottom: 4px;
+      right: 8px;
+    }
+
+    /* Modales */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 6, 23, 0.94); 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    body.light-theme .modal-overlay {
+      background: rgba(241, 245, 249, 0.94);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 20px;
+      width: 94%;
+      max-width: 950px;
+      padding: 3rem;
+      box-shadow: var(--modal-shadow);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-height: 95vh;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header-info {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      width: 100%;
+    }
+
+    .modal-tag {
+      font-size: 0.9rem;
+      font-weight: 900;
+      color: #00f2fe;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 0.5rem;
+    }
+
+    body.light-theme .modal-tag {
+      color: #0284c7;
+    }
+
+    .modal-category-name {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-light);
+    }
+
+    .question-display-area {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .question-text {
+      font-size: 2.2rem; 
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-light);
+      text-wrap: balance;
+    }
+
+    /* Temporizador circular */
+    .timer-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+
+    .timer-svg {
+      transform: rotate(-90deg);
+    }
+
+    .timer-track {
+      stroke: rgba(120, 120, 120, 0.1);
+      stroke-width: 8;
+      fill: transparent;
+    }
+
+    .timer-progress {
+      stroke: url(#timer-grad);
+      stroke-width: 8;
+      stroke-dasharray: 251.32;
+      stroke-dashoffset: 0;
+      fill: transparent;
+      transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+      stroke-linecap: round;
+    }
+
+    .timer-svg-container {
+      position: relative;
+      width: 125px; 
+      height: 125px;
+    }
+
+    .timer-text-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.2rem; 
+      font-weight: 900;
+      color: var(--text-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-timer-action {
+      background: rgba(120, 120, 120, 0.12);
+      border: 2px solid var(--border-color);
+      color: var(--text-light);
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-timer-action:hover {
+      background: rgba(120, 120, 120, 0.22);
+    }
+
+    /* Sección de Respuestas */
+    .answer-section {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .answer-box {
+      width: 100%;
+      background: rgba(124, 58, 237, 0.1); 
+      border: 2px dashed rgba(192, 132, 252, 0.5); 
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .answer-title {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #d8b4fe;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    body.light-theme .answer-title {
+      color: #6d28d9;
+    }
+
+    .answer-text {
+      font-size: 1.7rem; 
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .strategic-panel {
+      width: 100%;
+      background: rgba(120, 120, 120, 0.04);
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .strategic-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .assign-controls {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      max-width: 550px;
+    }
+
+    .select-team {
+      flex: 1;
+      background: var(--bg-color);
+      border: 2px solid var(--border-color);
+      color: var(--text-light);
+      padding: 0.85rem 1.2rem;
+      border-radius: 10px;
+      font-size: 1.15rem; 
+      font-weight: 800;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-team option {
+      background-color: var(--bg-color);
+      color: var(--text-light);
+    }
+
+    /* Botones principales */
+    .btn-action {
+      background: var(--primary-glow);
+      color: var(--text-dark);
+      border: none;
+      padding: 1.1rem 2.5rem;
+      font-size: 1.2rem; 
+      font-weight: 900;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 242, 254, 0.5);
+    }
+
+    .btn-reveal {
+      background: var(--accent-grad);
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-reveal:hover {
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+    }
+
+    .btn-finish {
+      background: var(--success-grad);
+      color: var(--text-dark);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+      display: none;
+    }
+
+    .btn-cancel {
+      background: rgba(120, 120, 120, 0.1);
+      border: 2px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 1rem;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger-color);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* Ruleta */
+    .points-reveal-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .points-badge-large {
+      font-size: 4.5rem; 
+      font-weight: 900;
+      text-align: center;
+      padding: 1.2rem 3.5rem;
+      border-radius: 20px;
+      background: rgba(120, 120, 120, 0.05);
+      border: 2px solid var(--border-color);
+      display: inline-block;
+      min-width: 320px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .positive-roll {
+      color: var(--success-color);
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .negative-roll {
+      color: var(--danger-color);
+      text-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+    }
+
+    .positive-final {
+      color: #ffffff;
+      background: var(--success-grad);
+      border-color: transparent;
+      box-shadow: 0 0 50px rgba(16, 185, 129, 0.6);
+      transform: scale(1.1);
+    }
+
+    .negative-final {
+      color: #ffffff;
+      background: var(--danger-grad);
+      border-color: transparent;
+      box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
+      transform: scale(1.1);
+    }
+
+    .points-destination-text {
+      margin-top: 1.25rem;
+      font-size: 1.3rem; 
+      font-weight: 800;
+      color: var(--text-light);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      15%, 45%, 75% { transform: translateX(-12px); }
+      30%, 60%, 90% { transform: translateX(12px); }
+    }
+
+    .shake-anim {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    footer {
+      text-align: center;
+      padding: 0.5rem 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      font-weight: 700;
+    }
+
+    .shortcut-tip {
+      background: rgba(120, 120, 120, 0.1);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      font-weight: 800;
+    }
+
+    /* Indicador de Turno Actual en Modal (Optimizada para Proyector) */
+    .modal-turn-indicator {
+      background: rgba(251, 191, 36, 0.08);
+      border: 2px solid rgba(251, 191, 36, 0.3);
+      color: #fbbf24;
+      padding: 0.6rem 2rem;
+      border-radius: 30px;
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-block;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    body.light-theme .modal-turn-indicator {
+      background: rgba(217, 119, 6, 0.08);
+      border-color: rgba(217, 119, 6, 0.3);
+      color: #d97706;
+    }
+
+    /* Clase de alerta para el Rebote */
+    .modal-turn-indicator.bounce-alert {
+      background: var(--danger-grad);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.55);
+      transform: scale(1.08);
+      animation: pulseAlert 0.5s infinite alternate;
+    }
+
+    @keyframes pulseAlert {
+      from { transform: scale(1.08); }
+      to { transform: scale(1.12); box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="light-theme"> <!-- Por defecto inicia en Tema Claro para proyector -->
+
+  <div class="app-container">
+    
+    <!-- Barra Superior -->
+    <header>
+      <div class="logo-container">
+        <h1>REPASO PARA EL SEGUNDO EXAMEN PARCIAL</h1>
+        <p>Optimizada para Proyección en Aula</p>
+      </div>
+      <div class="controls-panel">
+        <button class="btn-tool btn-rules" id="btn-open-rules-modal">
+          📋 Ver Reglas
+        </button>
+        <button class="btn-tool" id="btn-theme-toggle">
+          💡 Tema: Claro
+        </button>
+        <button class="btn-tool active-tool" id="btn-sound-toggle">
+          🔊 Sonido: ON
+        </button>
+        <button class="btn-tool" id="btn-fullscreen-toggle">
+          🖥️ Pantalla Completa
+        </button>
+        <button class="btn-tool" id="btn-reset">
+          🔄 Reiniciar Tablero
+        </button>
+      </div>
+    </header>
+
+    <!-- Botón Sorteador de Turno -->
+    <div class="draw-turn-container">
+      <button class="btn-draw-turn" id="btn-draw-turn">
+        🎲 Sortear Turno
+      </button>
+    </div>
+
+    <!-- Marcador Superior (10 Equipos) -->
+    <div class="scoreboard-container" id="scoreboard">
+      <!-- Generado dinámicamente -->
+    </div>
+
+    <!-- Tablero de Juego (8 Categorías × N Preguntas) -->
+    <div class="board-container" id="jeopardy-grid">
+      <!-- Generado dinámicamente -->
+    </div>
+
+    <!-- Pie de página -->
+    <footer>
+      <span>Tips: Haz clic en una tarjeta de equipo para <span class="shortcut-tip">destacarlo</span>. <span class="shortcut-tip">Doble clic en los nombres</span> para editar. <span class="shortcut-tip">Doble clic en números</span> para ajustar puntajes.</span>
+    </footer>
+
+  </div>
+
+  <!-- Modal de Pregunta -->
+  <div class="modal-overlay" id="question-modal">
+    <div class="modal-content">
+      
+      <!-- Canvas para confeti -->
+      <canvas id="confetti-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
+
+      <div class="modal-header-info">
+        <div class="modal-tag" id="modal-q-tag">Categoría &bull; Pregunta</div>
+        <div class="modal-category-name" id="modal-category-title">Nombre de la Categoría</div>
+      </div>
+
+      <div class="question-display-area">
+        <!-- Indicador de Turno Actual -->
+        <div id="modal-turn-indicator" class="modal-turn-indicator">
+          Turno actual: <span id="modal-turn-team-name">Ninguno (Sortea Turno)</span>
+        </div>
+        <p class="question-text" id="modal-question-text">¿Aquí se cargará el texto de la pregunta seleccionada?</p>
+      </div>
+
+      <!-- Temporizador Circular -->
+      <div class="timer-section" id="timer-container">
+        <div class="timer-svg-container">
+          <svg class="timer-svg" width="125" height="125" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="timer-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f2fe" />
+                <stop offset="100%" stop-color="#4facfe" />
+              </linearGradient>
+            </defs>
+            <circle class="timer-track" cx="50" cy="50" r="40" />
+            <circle class="timer-progress" cx="50" cy="50" r="40" id="timer-progress-bar" />
+          </svg>
+          <div class="timer-text-overlay" id="timer-number">60</div>
+        </div>
+        
+        <div class="timer-controls">
+          <button class="btn-timer-action" id="btn-timer-pause">Pausar</button>
+          <button class="btn-timer-action" id="btn-timer-add">+10 Seg</button>
+          <button class="btn-timer-action" id="btn-timer-rebote" style="background: var(--danger-grad); color: #ffffff; border: none; font-weight: 800; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);">💥 Rebote</button>
+        </div>
+
+        <button class="btn-action" id="btn-show-answer" style="margin-top: 1.5rem; width: 100%; max-width: 450px;">
+          Mostrar Respuesta Correcta
+        </button>
+      </div>
+
+      <!-- Fase Estratégica e Asignación de Puntos -->
+      <div class="answer-section" id="modal-answer-section">
+        
+        <div class="answer-box">
+          <div class="answer-title">Respuesta Correcta</div>
+          <p class="answer-text" id="modal-answer-text">Aquí se mostrará la respuesta de la pregunta.</p>
+        </div>
+
+        <div class="strategic-panel">
+          <div class="strategic-title" id="strategic-instruction-text">
+            El equipo que respondió debe elegir a cuál de los 10 equipos le asignará (o restará) los puntos:
+          </div>
+          
+          <div class="assign-controls">
+            <select class="select-team" id="team-assign-select">
+              <!-- Cargado dinámicamente -->
+            </select>
+            <button class="btn-action btn-reveal" id="btn-assign-points">
+              Asignar Puntos
+            </button>
+          </div>
+
+          <!-- Ruleta y Revelado Final de Puntos -->
+          <div class="points-reveal-container" id="points-reveal-wrapper">
+            <div class="points-badge-large" id="points-slot-display">???</div>
+            <div class="points-destination-text" id="points-dest-text">Asignando a Equipo...</div>
+          </div>
+
+        </div>
+
+        <!-- Botón de finalización del modal -->
+        <button class="btn-action btn-finish" id="btn-close-question" style="width: 100%; max-width: 450px;">
+          Cerrar Pregunta y Volver
+        </button>
+      </div>
+
+      <!-- Botón de cancelación -->
+      <button class="btn-cancel" id="btn-cancel-modal">
+        Cancelar Pregunta (Mantener Disponible)
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Modal de Reglas del Juego -->
+  <div class="modal-overlay" id="rules-modal">
+    <div class="modal-content" style="max-width: 750px; align-items: stretch; text-align: left;">
+      <h2 style="font-size: 2.1rem; font-weight: 900; background: var(--primary-glow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; text-align: center;">Reglas del repaso</h2>
+      
+      <div style="font-size: 1.15rem; line-height: 1.6; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; max-height: 55vh; padding-right: 0.5rem; color: var(--text-light);">
+        <p><strong>1. Turnos Aleatorios:</strong> Ningún equipo es dueño de la pregunta. El turno se decide por sorteo de ruleta en el momento. ¡Todos deben discutir la respuesta en voz baja desde que aparece en pantalla!</p>
+        <p><strong>2. El Rebote (Robo de Turno):</strong> Si el equipo seleccionado no responde, se activa el "Rebote". El sistema sorteará inmediatamente la pregunta entre los 9 equipos restantes. El nuevo equipo tendrá solo 15 segundos para dar la respuesta y ganar el control de la fase estratégica.</p>
+                
+        <div style="background: rgba(124, 58, 237, 0.08); border: 2px solid rgba(124, 58, 237, 0.25); padding: 1.2rem; border-radius: 12px; margin-top: 0.5rem;">
+          <h4 style="color: var(--accent-color); margin-bottom: 0.5rem; font-weight: 900;">Controles del Docente:</h4>
+          <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            <li><strong>Destacar Turno:</strong> Haz un clic en la tarjeta de un equipo en el marcador para encender un marco dorado, indicando quién juega.</li>
+            <li><strong>Sorteador Automático:</strong> Presiona "Sortear Turno" para jugar una ruleta rápida que elija al azar el equipo activo.</li>
+            <li><strong>Editar Nombres:</strong> Doble clic en el nombre de cualquier equipo para renombrarlo.</li>
+            <li><strong>Corregir Puntajes:</strong> Doble clic sobre los puntos de un equipo para ajustar su valor numérico directamente.</li>
+          </ul>
+        </div>
+      </div>
+      
+      <button class="btn-action" id="btn-close-rules" style="margin-top: 1.5rem; width: 100%;">¡Entendido, a jugar!</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 📂 ESTRU    // ==========================================
+    // 📂 ESTRUCTURA DE DATOS DEL JUEGO (REAL)
+    // ==========================================
+    const categories = [
+        "Intercambio de calor", "Caída de presión", "Caudalímetros", 
+        "Viscosidad", "Bombas centrífugas", "Agitación", 
+        "Calderas", "Seguridad industrial"
+    ];
+
+    const questionsDb = {
+        "Intercambio de calor": [
+            { q: "Mencione los mecanismos de transferencia de calor en un intercambiador de calor", a: "Convección y conducción" },
+            { q: "Mencione la fuerza motriz para el intercambio de calor", a: "La fuerza motriz para el intercambio de calor es la diferencia de temperatura" },
+            { q: "Explique cómo el espesor de la pared de un intercambiador de calor afecta el coeficiente global de transferencia de calor y su eficiencia.", a: "El espesor de la pared ofrece una resistencia a la transferencia de calor, por lo que al aumentarse disminuye el U y la eficiencia" },
+            { q: "Explique bajo qué condiciones es posible que la temperatura de salida del fluido frío de un intercambiador de calor sea mayor que la de entrada del fluido caliente", a: "Esto es imposible, ya que se incumpliría la segunda ley de la termodinámica" },
+            { q: "¿Por qué razón, bajo las mismas condiciones de flujo y temperaturas de entrada, un intercambiador de horquillas en contracorriente es más eficiente que uno en paralelo?", a: "Porque para las mismas temperaturas, la fuerza motriz media es mayor en contracorriente y aproximadamente constante, mientras que en paralelo disminuye hacia la salida." }
+        ],
+        "Caída de presión": [
+            { q: "¿De qué factores depende el factor de fricción en el régimen turbulento?", a: "De la aspereza relativa y del número de Reynolds" },
+            { q: "Dos tramos de tubería del mismo diámetro están conectados en serie. Uno es liso y el otro rugoso. Si el caudal es el mismo, ¿cuál contribuye más a la pérdida total?", a: "El tubo más rugoso contribuye más a la pérdida de carga" },
+            { q: "¿Qué sucede con la caída de presión si se duplica la longitud de la tubería?", a: "La caída de presión debe aumentar de manera lineal" },
+            { q: "¿Cómo afecta el diámetro interno de la tubería a la caída de presión, si el caudal and la longitud se mantienen constante?", a: "Aumenta drásticamente al disminuir el diámetro, ya que es inversamente proporcional a la quinta potencia del diámetro interno." },
+            { q: "¿Qué diagrama se utiliza para encontrar el factor de fricción en función del número de Reynolds y la rugosidad relativa?", a: "Diagrama de Moody" }
+        ],
+        "Caudalímetros": [
+            { q: "En el medidor de Venturi, ¿en que posición se colocan las tomas de presión para calcular el caudal?", a: "Se colocan a la entrada del instrumento y en la garganta." },
+            { q: "¿El tubo de Pitot mide el caudal volumétrico total en la tubería de forma directa?", a: "Falso, solo el rotámetro lo hace de forma directa." },
+            { q: "Mencione los 3 tipos, por principio de funcionamiento, de medidores de flujo estudiados en la práctica", a: "Sonda de velocidad, de carga y área variable." },
+            { q: "¿Cuál es el principio de funcionamiento de los medidores de carga variable?", a: "Funcionan a partir de la caída de presión que ocurre al estrangular el flujo" },
+            { q: "Explique por qué los medidores de orificio y tobera presentan una peor recuperación de la presión en comparación con un medidor de Venturi", a: "Por la geometría gradual de la sección convergente y divergente, la caída de presión permanente del Venturi es menor." }
+        ],
+        "Viscosidad": [
+            { q: "Defina viscosidad técnicamente", a: "La viscosidad es una medida de la fricción interna que presenta un fluido; por lo tanto determina su resistencia al movimiento o deformación" },
+            { q: "Durante una medición con viscosímetro rotacional, se observa que el esfuerzo cortante no es proporcional a la velocidad de deformación. ¿Qué tipo de fluido se tiene?", a: "Se trata de un fluido no newtoniano" },
+            { q: "En un fluido con esfuerzo cortante inicial (de fluencia), el comportamiento posterior es siempre estrictamente Newtoniano. ¿Verdadero o Falso?", a: "Falso. Existen plásticos de Bingham (lineales), pero también modelos de Herschel-Bulkley que son pseudoplásticos o dilatantes." },
+            { q: "Cómo se caracteriza a un fluido cuya viscosidad aumenta con el tiempo", a: "Reopéctico" },
+            { q: "Especifique la condición que permite determinar si la lectura de la variable de respuesta medida es confiable cuando se utiliza el viscosímetro rotacional Brookfield", a: "El % de torque debe estar entre un 10 y un 100 %" }
+        ],
+        "Bombas centrífugas": [
+            { q: "Mencione las 3 partes principales de una bomba centrífuga", a: "Eje, carcasa o voluta e impulsor" },
+            { q: "Describa la información que es posible conocer de una bomba centrífuga con el código 1 x 1 ½ - 8", a: "El código nos indica 1 pulgada de descarga, 1 ½ pulgadas de succión y hasta 8 pulgadas de diámetro del impulsor admisible" },
+            { q: "¿Qué son los puntos de máxima eficiencia y cómo se determinan?", a: "Son los puntos de caudal (caudal de diseño) y de potencia a la mayor eficiencia de la bomba." },
+            { q: "Explique a qué se refiere el término NPSH_R y NPSH_A.", a: "NPSH_R es la energía mínima requerida para evitar cavitación (la da el fabricante). NPSH_A es la energía disponible en la succión (la determina el usuario mediante balance de energía)." },
+            { q: "Explique cómo se obtiene el punto de operación de una bomba centrífuga", a: "Se grafica la curva característica de la bomba (H vs Q) y la curva del sistema. El punto de intersección corresponde al caudal y cabeza real entregados." }
+        ],
+        "Agitación": [
+            { q: "Explique en qué consiste el principio de escalamiento por similitud geométrica", a: "Consiste en que las dimensiones mantengan la razón del sistema de referencia" },
+            { q: "Bajo una misma velocidad de agitación y diámetro, ¿cuál, entre un agitador de aspas rectas y uno de aspas inclinadas tendrá un número de potencia menor?", a: "El de aspas inclinadas tiene un perfil que denota un menor coeficiente de resistencia" },
+            { q: "Explique por qué las mamparas impiden la formación del vórtice", a: "Porque transforman la componente tangencial del flujo en una componente vertical o axial" },
+            { q: "Justifique por qué, para un mismo agitador y condiciones, el número de potencia es mayor cuando hay presencia de deflectores", a: "Al haber deflectores se debe vencer la resistencia que estos presentan, requiriendo más potencia." },
+            { q: "¿Por qué la velocidad del tanque escalado es siempre menor que la del tanque de referencia?", a: "Porque depende del factor de escala (R). Incluso si el exponente es 1, la relación es n2 = n1/R. Como R > 1, n2 siempre será menor, evitando que los requerimientos de potencia se eléven." }
+        ],
+        "Calderas": [
+            { q: "¿Cuál es la diferencia entre un tratamiento interno y externo realizado a aguas de calderas?", a: "Interno: se realiza al agua dentro de la caldera. Externo: se realiza al agua antes de su ingreso." },
+            { q: "¿Cuál es la función del economizador?", a: "En esta unidad los gases de chimenea se utilizan para precalentar las corrientes que ingresan a la caldera" },
+            { q: "¿Cómo se genera vapor sobrecalentado en una caldera acuotubular?", a: "El vapor saturado se recircula por esta unidad para ponerla en contacto con los gases calientes y generar vapor sobrecalentado" },
+            { q: "Mencione los dos mecanismos de corrosión y su impacto en las propiedades del material.", a: "Corrosión generalizada (por zonas) o localizada (por picadura), ambas afectan la resistencia del material." },
+            { q: "Describa el impacto de las incrustaciones desde una perspectiva de intercambio de calor.", a: "Tienen menor conductividad térmica y reducen el área de intercambio. Para mantener la transferencia, se debe aumentar el delta de temperatura, consumiendo más combustible." }
+        ],
+        "Seguridad industrial": [
+            { q: "Mencione 2 peligros relacionados a las propiedades de las sustancias", a: "Toxicidad, Reactividad, Inflamabilidad, Riesgo biológico" },
+            { q: "Explique que es una medida preventiva y una medida de mitigación", a: "Las preventivas frenan la evolución de un accidente. Las de mitigación buscan disminuir las consecuencias." },
+            { q: "A qué se refiere cuando se habla de estrategias de seguridad pasivas y activas", a: "Las pasivas no necesitan del suceso para funcionar. Las activas entran en funcionamiento solo cuando ocurre el suceso" },
+            { q: "Mencione los 4 niveles de la jerarquía de control", a: "Inherente, pasivo, activo y procedimental" },
+            { q: "En un diagrama de corbatín, ¿qué elemento central representa el momento exacto en el que se pierde el control sobre el peligro y comienza la cadena del incidente?", a: "El Evento iniciador." }
+        ]
+    };
+
+    const POINTS_VALUES = [];
+    for (let val = -500; val <= 500; val += 50) {
+      if (val !== 0) POINTS_VALUES.push(val);
+    }
+
+    // ==========================================
+    // 🔊 CONTROLADOR DE AUDIO (Web Audio API)
+    // ==========================================
+    class SoundSynth {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (this.ctx) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      playClick() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
+        
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+        
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.1);
+      }
+
+      playTick() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      playSpin() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(280, this.ctx.currentTime + 0.07);
+        
+        gain.gain.setValueAtTime(0.03, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.07);
+        
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.07);
+      }
+
+      playSuccess() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const notes = [261.63, 329.63, 392.00, 523.25];
+        notes.forEach((freq, index) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + index * 0.08);
+          
+          gain.gain.setValueAtTime(0.12, now + index * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.005, now + index * 0.08 + 0.35);
+          
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          
+          osc.start(now + index * 0.08);
+          osc.stop(now + index * 0.08 + 0.4);
+        });
+      }
+
+      playFail() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc1.type = 'sawtooth';
+        osc2.type = 'triangle';
+        
+        osc1.frequency.setValueAtTime(140, now);
+        osc1.frequency.linearRampToValueAtTime(75, now + 0.45);
+        
+        osc2.frequency.setValueAtTime(143, now);
+        osc2.frequency.linearRampToValueAtTime(78, now + 0.45);
+        
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+        
+        osc1.start();
+        osc2.start();
+        osc1.stop(now + 0.5);
+        osc2.stop(now + 0.5);
+      }
+    }
+
+    const soundSynth = new SoundSynth();
+
+    // ==========================================
+    // 🎉 SISTEMA DE CONFETI EN CANVAS
+    // ==========================================
+    class ConfettiEffect {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.particles = [];
+        this.active = false;
+        this.colors = ['#00f2fe', '#4facfe', '#10b981', '#34d399', '#7c3aed', '#c084fc', '#fbbf24', '#ff0844'];
+      }
+
+      resize() {
+        this.canvas.width = this.canvas.parentElement.clientWidth;
+        this.canvas.height = this.canvas.parentElement.clientHeight;
+      }
+
+      start() {
+        this.resize();
+        this.particles = [];
+        this.active = true;
+        
+        for (let i = 0; i < 120; i++) {
+          this.particles.push({
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * -60 - 20,
+            r: Math.random() * 6 + 4,
+            color: this.colors[Math.floor(Math.random() * this.colors.length)],
+            tilt: Math.random() * 10 - 5,
+            tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+            tiltAngle: 0,
+            vy: Math.random() * 3 + 2,
+            vx: Math.random() * 3 - 1.5
+          });
+        }
+        this.animate();
+      }
+
+      stop() {
+        this.active = false;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+
+      animate() {
+        if (!this.active) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        let remaining = false;
+
+        this.particles.forEach(p => {
+          p.tiltAngle += p.tiltAngleIncremental;
+          p.y += p.vy;
+          p.x += p.vx + Math.sin(p.tiltAngle) * 0.5;
+          p.tilt = Math.sin(p.tiltAngle) * 12;
+
+          if (p.y < this.canvas.height + 20) {
+            remaining = true;
+          }
+
+          this.ctx.beginPath();
+          this.ctx.lineWidth = p.r;
+          this.ctx.strokeStyle = p.color;
+          this.ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+          this.ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+          this.ctx.stroke();
+        });
+
+        if (remaining && this.active) {
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+    }
+
+    // ==========================================
+    // ⚙️ GESTIÓN DE ESTADO DEL JUEGO
+    // ==========================================
+    const scores = Array(10).fill(0);
+    const teamNames = Array(10).fill(null).map((_, i) => `Equipo ${i + 1}`);
+    const playedQuestions = new Set();
+
+    let currentCol = null;
+    let currentRow = null;
+    let timerVal = 60;
+    let timerInterval = null;
+    let isTimerPaused = false;
+    let confettiEffect = null;
+
+    // Elementos del DOM
+    const scoreboardEl = document.getElementById('scoreboard');
+    const gridEl = document.getElementById('jeopardy-grid');
+    const modalEl = document.getElementById('question-modal');
+    const rulesModalEl = document.getElementById('rules-modal');
+    
+    // Elementos del Modal
+    const modalQTag = document.getElementById('modal-q-tag');
+    const modalCategoryTitle = document.getElementById('modal-category-title');
+    const modalQuestionText = document.getElementById('modal-question-text');
+    const timerProgressBar = document.getElementById('timer-progress-bar');
+    const timerNumber = document.getElementById('timer-number');
+    const modalTurnIndicator = document.getElementById('modal-turn-indicator');
+    const modalTurnTeamName = document.getElementById('modal-turn-team-name');
+    
+    const btnTimerPause = document.getElementById('btn-timer-pause');
+    const btnTimerAdd = document.getElementById('btn-timer-add');
+    const btnTimerRebote = document.getElementById('btn-timer-rebote');
+    const btnShowAnswer = document.getElementById('btn-show-answer');
+    
+    const modalAnswerSection = document.getElementById('modal-answer-section');
+    const modalAnswerText = document.getElementById('modal-answer-text');
+    const teamAssignSelect = document.getElementById('team-assign-select');
+    const btnAssignPoints = document.getElementById('btn-assign-points');
+    const btnCloseQuestion = document.getElementById('btn-close-question');
+    const btnCancelModal = document.getElementById('btn-cancel-modal');
+    
+    const pointsRevealWrapper = document.getElementById('points-reveal-wrapper');
+    const pointsSlotDisplay = document.getElementById('points-slot-display');
+    const pointsDestText = document.getElementById('points-dest-text');
+
+    // Botones globales
+    const btnSoundToggle = document.getElementById('btn-sound-toggle');
+    const btnFullscreenToggle = document.getElementById('btn-fullscreen-toggle');
+    const btnReset = document.getElementById('btn-reset');
+    const btnThemeToggle = document.getElementById('btn-theme-toggle');
+    const btnOpenRulesModal = document.getElementById('btn-open-rules-modal');
+    const btnCloseRules = document.getElementById('btn-close-rules');
+    const btnDrawTurn = document.getElementById('btn-draw-turn');
+
+    // ==========================================
+    // 🛠️ MÉTODOS DE INICIALIZACIÓN Y RENDERIZADO
+    // ==========================================
+    
+    function renderScoreboard() {
+      scoreboardEl.innerHTML = '';
+      for (let i = 0; i < 10; i++) {
+        const card = document.createElement('div');
+        card.className = 'team-card';
+        card.innerHTML = `
+          <div class="team-name-wrapper">
+            <span class="team-name" contenteditable="true" data-team-id="${i}">${teamNames[i]}</span>
+          </div>
+          <div class="team-score" id="score-${i}" data-team-id="${i}">${scores[i]}</div>
+        `;
+
+        card.addEventListener('click', (e) => {
+          if (e.target.classList.contains('team-name') || e.target.classList.contains('team-score')) {
+            return;
+          }
+          soundSynth.playClick();
+          card.classList.toggle('highlighted');
+        });
+
+        const nameSpan = card.querySelector('.team-name');
+        nameSpan.addEventListener('blur', (e) => {
+          const newName = e.target.textContent.trim() || `Equipo ${i + 1}`;
+          e.target.textContent = newName;
+          teamNames[i] = newName;
+          updateAssignDropdown(); 
+        });
+        nameSpan.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            e.target.blur();
+          }
+        });
+
+        const scoreDiv = card.querySelector('.team-score');
+        scoreDiv.addEventListener('dblclick', (e) => {
+          soundSynth.playClick();
+          const oldScore = scores[i];
+          const newScoreStr = prompt(`Ajustar puntaje manualmente para ${teamNames[i]}:`, oldScore);
+          if (newScoreStr !== null) {
+            const newScore = parseInt(newScoreStr, 10);
+            if (!isNaN(newScore)) {
+              scores[i] = newScore;
+              animateScoreCounter(i, oldScore, newScore);
+            }
+          }
+        });
+
+        scoreboardEl.appendChild(card);
+      }
+    }
+
+    // Renderiza el tablero de forma estrictamente simétrica (8 columnas x 5 filas)
+    function renderBoard() {
+      gridEl.innerHTML = '';
+      
+      // Fila 0: Cabeceras de categorías
+      for (let c = 0; c < 8; c++) {
+        const header = document.createElement('div');
+        header.className = 'grid-header';
+        header.innerHTML = `
+          <div class="header-index">Cat ${c + 1}</div>
+          <div class="header-name">${categories[c]}</div>
+        `;
+        gridEl.appendChild(header);
+      }
+
+      // Filas de preguntas (estrictamente 5)
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 8; c++) {
+          const btn = document.createElement('button');
+          btn.className = 'grid-btn';
+          btn.id = `btn-${c}-${r}`;
+          btn.innerHTML = `<span class="btn-index">P${r + 1}</span>`;
+          
+          if (playedQuestions.has(`${c}-${r}`)) {
+            btn.classList.add('played');
+          } else {
+            btn.addEventListener('click', () => {
+              openQuestion(c, r);
+            });
+          }
+          gridEl.appendChild(btn);
+        }
+      }
+    }
+
+    function updateAssignDropdown() {
+      teamAssignSelect.innerHTML = '';
+      for (let i = 0; i < 10; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = teamNames[i];
+        teamAssignSelect.appendChild(opt);
+      }
+    }
+
+    // ==========================================
+    // ⏱️ MECÁNICA DE TEMPORIZADOR Y CONTROL DE MODAL
+    // ==========================================
+
+    function openQuestion(col, row) {
+      soundSynth.playClick();
+      currentCol = col;
+      currentRow = row;
+      
+      isTimerPaused = false;
+      btnTimerPause.textContent = "Pausar";
+      btnTimerPause.disabled = false;
+      btnTimerAdd.disabled = false;
+      btnTimerRebote.disabled = false;
+      btnShowAnswer.disabled = false;
+      btnCancelModal.disabled = false;
+      
+      modalAnswerSection.style.display = 'none';
+      pointsRevealWrapper.style.display = 'none';
+      btnShowAnswer.style.display = 'block';
+      document.getElementById('timer-container').style.display = 'flex';
+      btnCancelModal.style.display = 'block';
+      btnAssignPoints.style.display = 'block';
+      btnCloseQuestion.style.display = 'none';
+      teamAssignSelect.disabled = false;
+      
+      if (confettiEffect) confettiEffect.stop();
+
+      const categoryName = categories[col];
+      const qData = questionsDb[categoryName][row];
+      modalQTag.innerHTML = `Categoría ${col + 1} &bull; Pregunta ${row + 1}`;
+      modalCategoryTitle.textContent = categoryName;
+      modalQuestionText.textContent = qData.q;
+      modalAnswerText.textContent = qData.a;
+      
+      updateAssignDropdown();
+
+      // Encontrar el equipo destacado en el marcador
+      const cards = document.querySelectorAll('.team-card');
+      let activeTeamName = "Ninguno (Sortea Turno)";
+      cards.forEach((card, idx) => {
+        if (card.classList.contains('highlighted')) {
+          activeTeamName = teamNames[idx];
+        }
+      });
+      modalTurnIndicator.classList.remove('bounce-alert');
+      modalTurnIndicator.innerHTML = `Turno actual: <span id="modal-turn-team-name">${activeTeamName}</span>`;
+
+      timerVal = 60;
+      updateTimerDisplay();
+
+      modalEl.classList.add('active');
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!isTimerPaused) {
+          timerVal--;
+          updateTimerDisplay();
+          
+          if (timerVal <= 10 && timerVal > 0) {
+            soundSynth.playTick();
+          }
+
+          if (timerVal <= 0) {
+            clearInterval(timerInterval);
+            soundSynth.playFail();
+            timerNumber.style.color = 'var(--danger-color)';
+          }
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      timerNumber.textContent = timerVal;
+      
+      const maxCirc = 251.32;
+      const offset = maxCirc - (timerVal / 60) * maxCirc;
+      timerProgressBar.style.strokeDashoffset = offset;
+
+      if (timerVal <= 10) {
+        timerProgressBar.style.stroke = 'var(--danger-color)';
+        timerNumber.style.color = 'var(--danger-color)';
+      } else if (timerVal <= 25) {
+        timerProgressBar.style.stroke = '#fbbf24';
+        timerNumber.style.color = '#fbbf24';
+      } else {
+        timerProgressBar.style.stroke = 'url(#timer-grad)';
+        timerNumber.style.color = 'var(--text-light)';
+      }
+    }
+
+    btnTimerPause.addEventListener('click', () => {
+      soundSynth.playClick();
+      isTimerPaused = !isTimerPaused;
+      btnTimerPause.textContent = isTimerPaused ? "Reanudar" : "Pausar";
+    });
+
+    btnTimerAdd.addEventListener('click', () => {
+      soundSynth.playClick();
+      timerVal = Math.min(timerVal + 10, 60);
+      updateTimerDisplay();
+    });
+
+    // Mecánica de Rebote (Robo de Turno)
+    btnTimerRebote.addEventListener('click', () => {
+      if (btnTimerRebote.disabled) return;
+      
+      // 1. Pausar el temporizador actual inmediatamente
+      clearInterval(timerInterval);
+      soundSynth.playClick();
+
+      // Desactivar temporalmente los controles del modal durante la ruleta y alerta
+      btnTimerPause.disabled = true;
+      btnTimerAdd.disabled = true;
+      btnTimerRebote.disabled = true;
+      btnShowAnswer.disabled = true;
+      btnCancelModal.disabled = true;
+
+      const cards = document.querySelectorAll('.team-card');
+      
+      // Encontrar el equipo que tiene el turno original (para excluirlo)
+      let currentActiveIndex = -1;
+      cards.forEach((card, idx) => {
+        if (card.classList.contains('highlighted')) {
+          currentActiveIndex = idx;
+        }
+      });
+
+      // Crear lista de equipos elegibles (los 9 restantes)
+      const eligibleIndices = [];
+      for (let i = 0; i < 10; i++) {
+        if (i !== currentActiveIndex) {
+          eligibleIndices.push(i);
+        }
+      }
+
+      // Desactivar transiciones suaves durante el sorteo rápido para evitar lag
+      scoreboardEl.classList.add('roulette-active');
+
+      // Sortear el ganador final entre los 9 restantes
+      const winnerIndex = eligibleIndices[Math.floor(Math.random() * eligibleIndices.length)];
+      const startIndex = Math.floor(Math.random() * 10);
+      const totalSteps = 15 + ((winnerIndex - startIndex + 10) % 10); // Sorteo rápido (15-24 pasos)
+
+      let step = 0;
+
+      function runRoulette() {
+        // Apagar todos
+        cards.forEach(card => card.classList.remove('highlighted'));
+        
+        // Encender el actual
+        const currentCardIndex = (startIndex + step) % 10;
+        cards[currentCardIndex].classList.add('highlighted');
+
+        if (step < totalSteps) {
+          soundSynth.playSpin();
+          step++;
+          // Desaceleración rápida
+          const nextDelay = 30 + Math.pow(step / totalSteps, 2) * 180;
+          setTimeout(runRoulette, nextDelay);
+        } else {
+          // Asegurar que el ganador definitivo queda seleccionado y limpio
+          cards.forEach(card => card.classList.remove('highlighted'));
+          cards[winnerIndex].classList.add('highlighted');
+          
+          // Reactivar transiciones suaves
+          scoreboardEl.classList.remove('roulette-active');
+          soundSynth.playSuccess();
+
+          // 2. Mostrar alerta de Rebote en el indicador durante 1.5 segundos antes de correr el reloj
+          const winnerName = teamNames[winnerIndex];
+          modalTurnIndicator.classList.add('bounce-alert');
+          modalTurnIndicator.textContent = `¡REBOTE! Turno de: ${winnerName}`;
+
+          setTimeout(() => {
+            // Restaurar indicador de turno normal
+            modalTurnIndicator.classList.remove('bounce-alert');
+            modalTurnIndicator.innerHTML = `Turno actual: <span id="modal-turn-team-name">${winnerName}</span>`;
+
+            // Reactivar los botones
+            btnTimerPause.disabled = false;
+            btnTimerAdd.disabled = false;
+            btnTimerRebote.disabled = false;
+            btnShowAnswer.disabled = false;
+            btnCancelModal.disabled = false;
+
+            // 3. Reiniciar el temporizador a 15 segundos y reanudarlo
+            timerVal = 15;
+            updateTimerDisplay();
+            isTimerPaused = false;
+            btnTimerPause.textContent = "Pausar";
+
+            // Volver a iniciar el temporizador
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+              if (!isTimerPaused) {
+                timerVal--;
+                updateTimerDisplay();
+                
+                if (timerVal <= 10 && timerVal > 0) {
+                  soundSynth.playTick();
+                }
+
+                if (timerVal <= 0) {
+                  clearInterval(timerInterval);
+                  soundSynth.playFail();
+                  timerNumber.style.color = 'var(--danger-color)';
+                }
+              }
+            }, 1000);
+          }, 1500);
+        }
+      }
+
+      runRoulette();
+    });
+
+    btnShowAnswer.addEventListener('click', () => {
+      soundSynth.playClick();
+      clearInterval(timerInterval); 
+      document.getElementById('timer-container').style.display = 'none';
+      modalAnswerSection.style.display = 'flex';
+    });
+
+    // ==========================================
+    // 🎲 ASIGNACIÓN ESTRATÉGICA Y RULETA
+    // ==========================================
+
+    btnAssignPoints.addEventListener('click', () => {
+      soundSynth.playClick();
+      
+      btnAssignPoints.style.display = 'none';
+      btnCancelModal.style.display = 'none'; 
+      teamAssignSelect.disabled = true;
+
+      const targetTeamId = parseInt(teamAssignSelect.value, 10);
+      const teamNameTarget = teamNames[targetTeamId];
+      
+      const randomPoints = POINTS_VALUES[Math.floor(Math.random() * POINTS_VALUES.length)];
+      
+      pointsRevealWrapper.style.display = 'flex';
+      pointsDestText.textContent = `Asignando puntos a: ${teamNameTarget}`;
+
+      let currentStep = 0;
+      const totalSteps = 22;
+      let delay = 50; 
+
+      function triggerRoll() {
+        if (currentStep < totalSteps) {
+          const tempVal = POINTS_VALUES[Math.floor(Math.random() * POINTS_VALUES.length)];
+          const sign = tempVal > 0 ? '+' : '';
+          
+          pointsSlotDisplay.textContent = `${sign}${tempVal}`;
+          pointsSlotDisplay.className = `points-badge-large ${tempVal > 0 ? 'positive-roll' : 'negative-roll'}`;
+          
+          soundSynth.playSpin();
+          currentStep++;
+          delay += 12; 
+          setTimeout(triggerRoll, delay);
+        } else {
+          const finalSign = randomPoints > 0 ? '+' : '';
+          pointsSlotDisplay.textContent = `${finalSign}${randomPoints}`;
+          
+          if (randomPoints > 0) {
+            pointsSlotDisplay.className = "points-badge-large positive-final";
+            soundSynth.playSuccess();
+            if (confettiEffect) confettiEffect.start();
+          } else {
+            pointsSlotDisplay.className = "points-badge-large negative-final";
+            soundSynth.playFail();
+            const modalContent = document.querySelector('.modal-content');
+            modalContent.classList.add('shake-anim');
+            setTimeout(() => modalContent.classList.remove('shake-anim'), 500);
+          }
+
+          const oldScore = scores[targetTeamId];
+          scores[targetTeamId] += randomPoints;
+          animateScoreCounter(targetTeamId, oldScore, scores[targetTeamId]);
+
+          btnCloseQuestion.style.display = 'block';
+        }
+      }
+
+      triggerRoll();
+    });
+
+    function animateScoreCounter(teamId, startScore, endScore) {
+      const scoreElement = document.getElementById(`score-${teamId}`);
+      if (!scoreElement) return;
+      
+      const duration = 850; 
+      const startTime = performance.now();
+
+      function update(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = progress * (2 - progress);
+        const currentScore = Math.round(startScore + (endScore - startScore) * easeProgress);
+        
+        scoreElement.textContent = currentScore;
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          scoreElement.textContent = endScore;
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    btnCloseQuestion.addEventListener('click', () => {
+      soundSynth.playClick();
+      playedQuestions.add(`${currentCol}-${currentRow}`);
+      
+      const boardBtn = document.getElementById(`btn-${currentCol}-${currentRow}`);
+      if (boardBtn) {
+        boardBtn.classList.add('played');
+        const newBtn = boardBtn.cloneNode(true);
+        boardBtn.replaceWith(newBtn);
+      }
+
+      closeModal();
+    });
+
+    btnCancelModal.addEventListener('click', () => {
+      soundSynth.playClick();
+      closeModal();
+    });
+
+    function closeModal() {
+      clearInterval(timerInterval);
+      modalEl.classList.remove('active');
+      if (confettiEffect) confettiEffect.stop();
+      currentCol = null;
+      currentRow = null;
+    }
+
+    // ==========================================
+    // 🎛️ CONTROLES GLOBALES
+    // ==========================================
+
+    btnSoundToggle.addEventListener('click', () => {
+      soundSynth.enabled = !soundSynth.enabled;
+      if (soundSynth.enabled) {
+        btnSoundToggle.textContent = "🔊 Sonido: ON";
+        btnSoundToggle.classList.add('active-tool');
+        soundSynth.playClick();
+      } else {
+        btnSoundToggle.textContent = "🔇 Sonido: OFF";
+        btnSoundToggle.classList.remove('active-tool');
+      }
+    });
+
+    btnFullscreenToggle.addEventListener('click', () => {
+      soundSynth.playClick();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          alert(`Error al activar pantalla completa: ${err.message}`);
+        });
+        btnFullscreenToggle.textContent = "⏹️ Salir Pantalla Completa";
+        btnFullscreenToggle.classList.add('active-tool');
+      } else {
+        document.exitFullscreen();
+        btnFullscreenToggle.textContent = "🖥️ Pantalla Completa";
+        btnFullscreenToggle.classList.remove('active-tool');
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        btnFullscreenToggle.textContent = "🖥️ Pantalla Completa";
+        btnFullscreenToggle.classList.remove('active-tool');
+      } else {
+        btnFullscreenToggle.textContent = "⏹️ Salir Pantalla Completa";
+        btnFullscreenToggle.classList.add('active-tool');
+      }
+    });
+
+    btnReset.addEventListener('click', () => {
+      soundSynth.playClick();
+      if (confirm("¿Estás seguro de que deseas reiniciar todo el juego?")) {
+        playedQuestions.clear();
+        scores.fill(0);
+        
+        document.querySelectorAll('.team-card').forEach(card => {
+          card.classList.remove('highlighted');
+        });
+
+        renderScoreboard();
+        renderBoard();
+        closeModal();
+      }
+    });
+
+    btnThemeToggle.addEventListener('click', () => {
+      soundSynth.playClick();
+      const isLight = document.body.classList.toggle('light-theme');
+      btnThemeToggle.textContent = isLight ? "💡 Tema: Claro" : "🌙 Tema: Oscuro";
+      btnThemeToggle.classList.toggle('active-tool', !isLight);
+    });
+
+    btnOpenRulesModal.addEventListener('click', () => {
+      soundSynth.playClick();
+      rulesModalEl.classList.add('active');
+    });
+
+    btnCloseRules.addEventListener('click', () => {
+      soundSynth.playClick();
+      rulesModalEl.classList.remove('active');
+    });
+
+    // Mecánica de Sorteador de Turno (Ruleta de Equipos)
+    btnDrawTurn.addEventListener('click', () => {
+      if (btnDrawTurn.disabled) return;
+      btnDrawTurn.disabled = true;
+      soundSynth.playClick();
+
+      const cards = document.querySelectorAll('.team-card');
+      // Quitar cualquier resalte previo
+      cards.forEach(card => card.classList.remove('highlighted'));
+
+      // Desactivar transiciones suaves durante el sorteo rápido para evitar desenfoques y lag
+      scoreboardEl.classList.add('roulette-active');
+
+      const winnerIndex = Math.floor(Math.random() * 10);
+      const startIndex = Math.floor(Math.random() * 10);
+      const totalSteps = 20 + ((winnerIndex - startIndex + 10) % 10); // Entre 20 y 29 pasos para un giro vistoso
+
+      let step = 0;
+
+      function runRoulette() {
+        // Apagar todos
+        cards.forEach(card => card.classList.remove('highlighted'));
+        
+        // Encender el actual
+        const currentCardIndex = (startIndex + step) % 10;
+        cards[currentCardIndex].classList.add('highlighted');
+
+        if (step < totalSteps) {
+          soundSynth.playSpin();
+          step++;
+          // Desaceleración exponencial: empieza muy rápido (35ms) y frena gradualmente
+          const nextDelay = 35 + Math.pow(step / totalSteps, 2.2) * 220;
+          setTimeout(runRoulette, nextDelay);
+        } else {
+          // Asegurar que el ganador definitivo queda seleccionado y limpio
+          cards.forEach(card => card.classList.remove('highlighted'));
+          cards[winnerIndex].classList.add('highlighted');
+          
+          // Reactivar transiciones suaves de hover
+          scoreboardEl.classList.remove('roulette-active');
+          
+          soundSynth.playSuccess();
+          btnDrawTurn.disabled = false;
+        }
+      }
+
+      runRoulette();
+    });
+
+    // ==========================================
+    // 🚀 INICIALIZACIÓN
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderScoreboard();
+      renderBoard();
+      
+      const canvas = document.getElementById('confetti-canvas');
+      confettiEffect = new ConfettiEffect(canvas);
+      
+      window.addEventListener('resize', () => {
+        if (confettiEffect && confettiEffect.active) {
+          confettiEffect.resize();
+        }
+      });
+
+      const unlockAudio = () => {
+        soundSynth.init();
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('keydown', unlockAudio);
+      };
+      document.addEventListener('click', unlockAudio);
+      document.addEventListener('keydown', unlockAudio);
+    });
+
+  </script>
+</body>
+</html>
