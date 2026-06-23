@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jeopardy Clase - Repaso Interactivo (Optimizada para Proyector)</title>
-  
+
   <!-- Carga de fuente moderna y legible para proyectores -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,42 +14,47 @@
   <style>
     :root {
       /* Paleta de alto contraste para proyección en salas iluminadas */
-      --bg-color: #030712; /* Fondo casi negro puro para evitar lavado del color en modo oscuro */
-      --bg-panel: rgba(17, 24, 39, 0.94); /* Alta opacidad para máxima legibilidad del texto */
-      --border-color: rgba(255, 255, 255, 0.15); /* Bordes más marcados */
-      
+      --bg-color: #030712;
+      /* Fondo casi negro puro para evitar lavado del color en modo oscuro */
+      --bg-panel: rgba(17, 24, 39, 0.94);
+      /* Alta opacidad para máxima legibilidad del texto */
+      --border-color: rgba(255, 255, 255, 0.15);
+      /* Bordes más marcados */
+
       /* Colores y degradados súper brillantes */
       --primary-glow: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
       --accent-grad: linear-gradient(135deg, #8b5cf6 0%, #d8b4fe 100%);
       --success-grad: linear-gradient(135deg, #10b981 0%, #34d399 100%);
       --danger-grad: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
-      
+
       --accent-color: #a78bfa;
       --success-color: #10b981;
       --danger-color: #f87171;
-      
-      --text-light: #ffffff; 
-      --text-muted: #d1d5db; 
+
+      --text-light: #ffffff;
+      --text-muted: #d1d5db;
       --text-dark: #0f172a;
-      
+
       --card-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
       --modal-shadow: 0 0 60px rgba(0, 242, 254, 0.12), 0 30px 60px rgba(0, 0, 0, 0.8);
     }
 
     /* TEMA CLARO: Predeterminado para proyector. Altísima legibilidad incluso con luz natural */
     body.light-theme {
-      --bg-color: #f8fafc; /* Fondo blanco-grisáceo de alta reflectancia */
+      --bg-color: #f8fafc;
+      /* Fondo blanco-grisáceo de alta reflectancia */
       --bg-panel: rgba(255, 255, 255, 0.98);
       --border-color: rgba(15, 23, 42, 0.18);
-      
+
       --accent-color: #6d28d9;
       --success-color: #047857;
       --danger-color: #b91c1c;
-      
-      --text-light: #0f172a; /* Texto negro azulado de alto contraste */
+
+      --text-light: #0f172a;
+      /* Texto negro azulado de alto contraste */
       --text-muted: #334155;
       --text-dark: #ffffff;
-      
+
       --card-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
       --modal-shadow: 0 0 50px rgba(0, 0, 0, 0.15), 0 30px 60px rgba(0, 0, 0, 0.15);
     }
@@ -69,9 +75,10 @@
       display: flex;
       flex-direction: column;
       padding: 0.75rem;
-      overflow: hidden; /* Bloquea el scroll para mantener la presentación limpia */
+      overflow: hidden;
+      /* Bloquea el scroll para mantener la presentación limpia */
       transition: background-color 0.3s ease, color 0.3s ease;
-      background-image: 
+      background-image:
         radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
         radial-gradient(circle at 90% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 40%);
     }
@@ -155,6 +162,7 @@
       color: #ffffff;
       border: none;
     }
+
     .btn-rules:hover {
       box-shadow: 0 0 15px rgba(124, 58, 237, 0.45);
     }
@@ -267,7 +275,7 @@
     .team-name {
       display: inline-block;
       font-size: 0.85rem;
-      font-weight: 800; 
+      font-weight: 800;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -295,8 +303,8 @@
     }
 
     .team-score {
-      font-size: 1.8rem; 
-      font-weight: 900; 
+      font-size: 1.8rem;
+      font-weight: 900;
       color: var(--text-light);
       font-variant-numeric: tabular-nums;
       cursor: pointer;
@@ -316,9 +324,9 @@
       flex: 1;
       display: grid;
       grid-template-columns: repeat(8, minmax(0, 1fr));
-      grid-template-rows: 9vh repeat(5, 1fr); 
+      grid-template-rows: 9vh repeat(5, 1fr);
       gap: 0.5rem;
-      min-height: 0; 
+      min-height: 0;
       margin-bottom: 0.25rem;
     }
 
@@ -362,7 +370,7 @@
 
     .header-name {
       font-size: 0.95rem;
-      font-weight: 800; 
+      font-weight: 800;
       line-height: 1.15;
       color: var(--text-light);
       display: -webkit-box;
@@ -374,8 +382,8 @@
 
     /* Botones de preguntas */
     .grid-btn {
-      background: rgba(120, 120, 120, 0.05); 
-      border: 2px solid var(--border-color); 
+      background: rgba(120, 120, 120, 0.05);
+      border: 2px solid var(--border-color);
       border-radius: 10px;
       display: flex;
       justify-content: center;
@@ -417,8 +425,8 @@
     }
 
     .btn-index {
-      font-size: 1.7rem; 
-      font-weight: 900; 
+      font-size: 1.7rem;
+      font-weight: 900;
       position: relative;
       z-index: 1;
       color: var(--text-light);
@@ -469,7 +477,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 6, 23, 0.94); 
+      background: rgba(2, 6, 23, 0.94);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -542,7 +550,7 @@
     }
 
     .question-text {
-      font-size: 2.2rem; 
+      font-size: 2.2rem;
       font-weight: 800;
       line-height: 1.35;
       color: var(--text-light);
@@ -580,7 +588,7 @@
 
     .timer-svg-container {
       position: relative;
-      width: 125px; 
+      width: 125px;
       height: 125px;
     }
 
@@ -589,7 +597,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 2.2rem; 
+      font-size: 2.2rem;
       font-weight: 900;
       color: var(--text-light);
       font-variant-numeric: tabular-nums;
@@ -630,8 +638,8 @@
 
     .answer-box {
       width: 100%;
-      background: rgba(124, 58, 237, 0.1); 
-      border: 2px dashed rgba(192, 132, 252, 0.5); 
+      background: rgba(124, 58, 237, 0.1);
+      border: 2px dashed rgba(192, 132, 252, 0.5);
       border-radius: 12px;
       padding: 1.5rem 2rem;
       text-align: center;
@@ -652,7 +660,7 @@
     }
 
     .answer-text {
-      font-size: 1.7rem; 
+      font-size: 1.7rem;
       font-weight: 700;
       color: var(--text-light);
     }
@@ -690,7 +698,7 @@
       color: var(--text-light);
       padding: 0.85rem 1.2rem;
       border-radius: 10px;
-      font-size: 1.15rem; 
+      font-size: 1.15rem;
       font-weight: 800;
       outline: none;
       cursor: pointer;
@@ -707,7 +715,7 @@
       color: var(--text-dark);
       border: none;
       padding: 1.1rem 2.5rem;
-      font-size: 1.2rem; 
+      font-size: 1.2rem;
       font-weight: 900;
       border-radius: 12px;
       cursor: pointer;
@@ -768,7 +776,7 @@
     }
 
     .points-badge-large {
-      font-size: 4.5rem; 
+      font-size: 4.5rem;
       font-weight: 900;
       text-align: center;
       padding: 1.2rem 3.5rem;
@@ -808,15 +816,29 @@
 
     .points-destination-text {
       margin-top: 1.25rem;
-      font-size: 1.3rem; 
+      font-size: 1.3rem;
       font-weight: 800;
       color: var(--text-light);
     }
 
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      15%, 45%, 75% { transform: translateX(-12px); }
-      30%, 60%, 90% { transform: translateX(12px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      15%,
+      45%,
+      75% {
+        transform: translateX(-12px);
+      }
+
+      30%,
+      60%,
+      90% {
+        transform: translateX(12px);
+      }
     }
 
     .shake-anim {
@@ -874,20 +896,34 @@
     }
 
     @keyframes pulseAlert {
-      from { transform: scale(1.08); }
-      to { transform: scale(1.12); box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+      from {
+        transform: scale(1.08);
+      }
+
+      to {
+        transform: scale(1.12);
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.7);
+      }
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
+
 <body class="light-theme"> <!-- Por defecto inicia en Tema Claro para proyector -->
 
   <div class="app-container">
-    
+
     <!-- Barra Superior -->
     <header>
       <div class="logo-container">
@@ -932,7 +968,9 @@
 
     <!-- Pie de página -->
     <footer>
-      <span>Tips: Haz clic en una tarjeta de equipo para <span class="shortcut-tip">destacarlo</span>. <span class="shortcut-tip">Doble clic en los nombres</span> para editar. <span class="shortcut-tip">Doble clic en números</span> para ajustar puntajes.</span>
+      <span>Tips: Haz clic en una tarjeta de equipo para <span class="shortcut-tip">destacarlo</span>. <span
+          class="shortcut-tip">Doble clic en los nombres</span> para editar. <span class="shortcut-tip">Doble clic en
+          números</span> para ajustar puntajes.</span>
     </footer>
 
   </div>
@@ -940,9 +978,10 @@
   <!-- Modal de Pregunta -->
   <div class="modal-overlay" id="question-modal">
     <div class="modal-content">
-      
+
       <!-- Canvas para confeti -->
-      <canvas id="confetti-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
+      <canvas id="confetti-canvas"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
 
       <div class="modal-header-info">
         <div class="modal-tag" id="modal-q-tag">Categoría &bull; Pregunta</div>
@@ -972,11 +1011,13 @@
           </svg>
           <div class="timer-text-overlay" id="timer-number">60</div>
         </div>
-        
+
         <div class="timer-controls">
           <button class="btn-timer-action" id="btn-timer-pause">Pausar</button>
           <button class="btn-timer-action" id="btn-timer-add">+10 Seg</button>
-          <button class="btn-timer-action" id="btn-timer-rebote" style="background: var(--danger-grad); color: #ffffff; border: none; font-weight: 800; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);">💥 Rebote</button>
+          <button class="btn-timer-action" id="btn-timer-rebote"
+            style="background: var(--danger-grad); color: #ffffff; border: none; font-weight: 800; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);">💥
+            Rebote</button>
         </div>
 
         <button class="btn-action" id="btn-show-answer" style="margin-top: 1.5rem; width: 100%; max-width: 450px;">
@@ -986,7 +1027,7 @@
 
       <!-- Fase Estratégica e Asignación de Puntos -->
       <div class="answer-section" id="modal-answer-section">
-        
+
         <div class="answer-box">
           <div class="answer-title">Respuesta Correcta</div>
           <p class="answer-text" id="modal-answer-text">Aquí se mostrará la respuesta de la pregunta.</p>
@@ -996,7 +1037,7 @@
           <div class="strategic-title" id="strategic-instruction-text">
             El equipo que respondió debe elegir a cuál de los 10 equipos le asignará (o restará) los puntos:
           </div>
-          
+
           <div class="assign-controls">
             <select class="select-team" id="team-assign-select">
               <!-- Cargado dinámicamente -->
@@ -1031,24 +1072,35 @@
   <!-- Modal de Reglas del Juego -->
   <div class="modal-overlay" id="rules-modal">
     <div class="modal-content" style="max-width: 750px; align-items: stretch; text-align: left;">
-      <h2 style="font-size: 2.1rem; font-weight: 900; background: var(--primary-glow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; text-align: center;">Reglas del repaso</h2>
-      
-      <div style="font-size: 1.15rem; line-height: 1.6; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; max-height: 55vh; padding-right: 0.5rem; color: var(--text-light);">
-        <p><strong>1. Turnos Aleatorios:</strong> Ningún equipo es dueño de la pregunta. El turno se decide por sorteo de ruleta en el momento. ¡Todos deben discutir la respuesta en voz baja desde que aparece en pantalla!</p>
-        <p><strong>2. El Rebote (Robo de Turno):</strong> Si el equipo seleccionado no responde, se activa el "Rebote". El sistema sorteará inmediatamente la pregunta entre los 9 equipos restantes. El nuevo equipo tendrá solo 15 segundos para dar la respuesta y ganar el control de la fase estratégica.</p>
-                
-        <div style="background: rgba(124, 58, 237, 0.08); border: 2px solid rgba(124, 58, 237, 0.25); padding: 1.2rem; border-radius: 12px; margin-top: 0.5rem;">
+      <h2
+        style="font-size: 2.1rem; font-weight: 900; background: var(--primary-glow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; text-align: center;">
+        Reglas del repaso</h2>
+
+      <div
+        style="font-size: 1.15rem; line-height: 1.6; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; max-height: 55vh; padding-right: 0.5rem; color: var(--text-light);">
+        <p><strong>1. Turnos Aleatorios:</strong> Ningún equipo es dueño de la pregunta. El turno se decide por sorteo
+          de ruleta en el momento. ¡Todos deben discutir la respuesta en voz baja desde que aparece en pantalla!</p>
+        <p><strong>2. El Rebote (Robo de Turno):</strong> Si el equipo seleccionado no responde, se activa el "Rebote".
+          El sistema sorteará inmediatamente la pregunta entre los 9 equipos restantes. El nuevo equipo tendrá solo 15
+          segundos para dar la respuesta y ganar el control de la fase estratégica.</p>
+
+        <div
+          style="background: rgba(124, 58, 237, 0.08); border: 2px solid rgba(124, 58, 237, 0.25); padding: 1.2rem; border-radius: 12px; margin-top: 0.5rem;">
           <h4 style="color: var(--accent-color); margin-bottom: 0.5rem; font-weight: 900;">Controles del Docente:</h4>
           <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
-            <li><strong>Destacar Turno:</strong> Haz un clic en la tarjeta de un equipo en el marcador para encender un marco dorado, indicando quién juega.</li>
-            <li><strong>Sorteador Automático:</strong> Presiona "Sortear Turno" para jugar una ruleta rápida que elija al azar el equipo activo.</li>
+            <li><strong>Destacar Turno:</strong> Haz un clic en la tarjeta de un equipo en el marcador para encender un
+              marco dorado, indicando quién juega.</li>
+            <li><strong>Sorteador Automático:</strong> Presiona "Sortear Turno" para jugar una ruleta rápida que elija
+              al azar el equipo activo.</li>
             <li><strong>Editar Nombres:</strong> Doble clic en el nombre de cualquier equipo para renombrarlo.</li>
-            <li><strong>Corregir Puntajes:</strong> Doble clic sobre los puntos de un equipo para ajustar su valor numérico directamente.</li>
+            <li><strong>Corregir Puntajes:</strong> Doble clic sobre los puntos de un equipo para ajustar su valor
+              numérico directamente.</li>
           </ul>
         </div>
       </div>
-      
-      <button class="btn-action" id="btn-close-rules" style="margin-top: 1.5rem; width: 100%;">¡Entendido, a jugar!</button>
+
+      <button class="btn-action" id="btn-close-rules" style="margin-top: 1.5rem; width: 100%;">¡Entendido, a
+        jugar!</button>
     </div>
   </div>
 
@@ -1058,68 +1110,68 @@
     // 📂 ESTRUCTURA DE DATOS DEL JUEGO (REAL)
     // ==========================================
     const categories = [
-        "Intercambio de calor", "Caída de presión", "Caudalímetros", 
-        "Viscosidad", "Bombas centrífugas", "Agitación", 
-        "Calderas", "Seguridad industrial"
+      "Intercambio de calor", "Caída de presión", "Caudalímetros",
+      "Viscosidad", "Bombas centrífugas", "Agitación",
+      "Calderas", "Seguridad industrial"
     ];
 
     const questionsDb = {
-        "Intercambio de calor": [
-            { q: "Mencione los mecanismos de transferencia de calor en un intercambiador de calor", a: "Convección y conducción" },
-            { q: "Mencione la fuerza motriz para el intercambio de calor", a: "La fuerza motriz para el intercambio de calor es la diferencia de temperatura" },
-            { q: "Explique cómo el espesor de la pared de un intercambiador de calor afecta el coeficiente global de transferencia de calor y su eficiencia.", a: "El espesor de la pared ofrece una resistencia a la transferencia de calor, por lo que al aumentarse disminuye el U y la eficiencia" },
-            { q: "Explique bajo qué condiciones es posible que la temperatura de salida del fluido frío de un intercambiador de calor sea mayor que la de entrada del fluido caliente", a: "Esto es imposible, ya que se incumpliría la segunda ley de la termodinámica" },
-            { q: "¿Por qué razón, bajo las mismas condiciones de flujo y temperaturas de entrada, un intercambiador de horquillas en contracorriente es más eficiente que uno en paralelo?", a: "Porque para las mismas temperaturas, la fuerza motriz media es mayor en contracorriente y aproximadamente constante, mientras que en paralelo disminuye hacia la salida." }
-        ],
-        "Caída de presión": [
-            { q: "¿De qué factores depende el factor de fricción en el régimen turbulento?", a: "De la aspereza relativa y del número de Reynolds" },
-            { q: "Dos tramos de tubería del mismo diámetro están conectados en serie. Uno es liso y el otro rugoso. Si el caudal es el mismo, ¿cuál contribuye más a la pérdida total?", a: "El tubo más rugoso contribuye más a la pérdida de carga" },
-            { q: "¿Qué sucede con la caída de presión si se duplica la longitud de la tubería?", a: "La caída de presión debe aumentar de manera lineal" },
-            { q: "¿Cómo afecta el diámetro interno de la tubería a la caída de presión, si el caudal and la longitud se mantienen constante?", a: "Aumenta drásticamente al disminuir el diámetro, ya que es inversamente proporcional a la quinta potencia del diámetro interno." },
-            { q: "¿Qué diagrama se utiliza para encontrar el factor de fricción en función del número de Reynolds y la rugosidad relativa?", a: "Diagrama de Moody" }
-        ],
-        "Caudalímetros": [
-            { q: "En el medidor de Venturi, ¿en que posición se colocan las tomas de presión para calcular el caudal?", a: "Se colocan a la entrada del instrumento y en la garganta." },
-            { q: "¿El tubo de Pitot mide el caudal volumétrico total en la tubería de forma directa?", a: "Falso, solo el rotámetro lo hace de forma directa." },
-            { q: "Mencione los 3 tipos, por principio de funcionamiento, de medidores de flujo estudiados en la práctica", a: "Sonda de velocidad, de carga y área variable." },
-            { q: "¿Cuál es el principio de funcionamiento de los medidores de carga variable?", a: "Funcionan a partir de la caída de presión que ocurre al estrangular el flujo" },
-            { q: "Explique por qué los medidores de orificio y tobera presentan una peor recuperación de la presión en comparación con un medidor de Venturi", a: "Por la geometría gradual de la sección convergente y divergente, la caída de presión permanente del Venturi es menor." }
-        ],
-        "Viscosidad": [
-            { q: "Defina viscosidad técnicamente", a: "La viscosidad es una medida de la fricción interna que presenta un fluido; por lo tanto determina su resistencia al movimiento o deformación" },
-            { q: "Durante una medición con viscosímetro rotacional, se observa que el esfuerzo cortante no es proporcional a la velocidad de deformación. ¿Qué tipo de fluido se tiene?", a: "Se trata de un fluido no newtoniano" },
-            { q: "En un fluido con esfuerzo cortante inicial (de fluencia), el comportamiento posterior es siempre estrictamente Newtoniano. ¿Verdadero o Falso?", a: "Falso. Existen plásticos de Bingham (lineales), pero también modelos de Herschel-Bulkley que son pseudoplásticos o dilatantes." },
-            { q: "Cómo se caracteriza a un fluido cuya viscosidad aumenta con el tiempo", a: "Reopéctico" },
-            { q: "Especifique la condición que permite determinar si la lectura de la variable de respuesta medida es confiable cuando se utiliza el viscosímetro rotacional Brookfield", a: "El % de torque debe estar entre un 10 y un 100 %" }
-        ],
-        "Bombas centrífugas": [
-            { q: "Mencione las 3 partes principales de una bomba centrífuga", a: "Eje, carcasa o voluta e impulsor" },
-            { q: "Describa la información que es posible conocer de una bomba centrífuga con el código 1 x 1 ½ - 8", a: "El código nos indica 1 pulgada de descarga, 1 ½ pulgadas de succión y hasta 8 pulgadas de diámetro del impulsor admisible" },
-            { q: "¿Qué son los puntos de máxima eficiencia y cómo se determinan?", a: "Son los puntos de caudal (caudal de diseño) y de potencia a la mayor eficiencia de la bomba." },
-            { q: "Explique a qué se refiere el término NPSH_R y NPSH_A.", a: "NPSH_R es la energía mínima requerida para evitar cavitación (la da el fabricante). NPSH_A es la energía disponible en la succión (la determina el usuario mediante balance de energía)." },
-            { q: "Explique cómo se obtiene el punto de operación de una bomba centrífuga", a: "Se grafica la curva característica de la bomba (H vs Q) y la curva del sistema. El punto de intersección corresponde al caudal y cabeza real entregados." }
-        ],
-        "Agitación": [
-            { q: "Explique en qué consiste el principio de escalamiento por similitud geométrica", a: "Consiste en que las dimensiones mantengan la razón del sistema de referencia" },
-            { q: "Bajo una misma velocidad de agitación y diámetro, ¿cuál, entre un agitador de aspas rectas y uno de aspas inclinadas tendrá un número de potencia menor?", a: "El de aspas inclinadas tiene un perfil que denota un menor coeficiente de resistencia" },
-            { q: "Explique por qué las mamparas impiden la formación del vórtice", a: "Porque transforman la componente tangencial del flujo en una componente vertical o axial" },
-            { q: "Justifique por qué, para un mismo agitador y condiciones, el número de potencia es mayor cuando hay presencia de deflectores", a: "Al haber deflectores se debe vencer la resistencia que estos presentan, requiriendo más potencia." },
-            { q: "¿Por qué la velocidad del tanque escalado es siempre menor que la del tanque de referencia?", a: "Porque depende del factor de escala (R). Incluso si el exponente es 1, la relación es n2 = n1/R. Como R > 1, n2 siempre será menor, evitando que los requerimientos de potencia se eléven." }
-        ],
-        "Calderas": [
-            { q: "¿Cuál es la diferencia entre un tratamiento interno y externo realizado a aguas de calderas?", a: "Interno: se realiza al agua dentro de la caldera. Externo: se realiza al agua antes de su ingreso." },
-            { q: "¿Cuál es la función del economizador?", a: "En esta unidad los gases de chimenea se utilizan para precalentar las corrientes que ingresan a la caldera" },
-            { q: "¿Cómo se genera vapor sobrecalentado en una caldera acuotubular?", a: "El vapor saturado se recircula por esta unidad para ponerla en contacto con los gases calientes y generar vapor sobrecalentado" },
-            { q: "Mencione los dos mecanismos de corrosión y su impacto en las propiedades del material.", a: "Corrosión generalizada (por zonas) o localizada (por picadura), ambas afectan la resistencia del material." },
-            { q: "Describa el impacto de las incrustaciones desde una perspectiva de intercambio de calor.", a: "Tienen menor conductividad térmica y reducen el área de intercambio. Para mantener la transferencia, se debe aumentar el delta de temperatura, consumiendo más combustible." }
-        ],
-        "Seguridad industrial": [
-            { q: "Mencione 2 peligros relacionados a las propiedades de las sustancias", a: "Toxicidad, Reactividad, Inflamabilidad, Riesgo biológico" },
-            { q: "Explique que es una medida preventiva y una medida de mitigación", a: "Las preventivas frenan la evolución de un accidente. Las de mitigación buscan disminuir las consecuencias." },
-            { q: "A qué se refiere cuando se habla de estrategias de seguridad pasivas y activas", a: "Las pasivas no necesitan del suceso para funcionar. Las activas entran en funcionamiento solo cuando ocurre el suceso" },
-            { q: "Mencione los 4 niveles de la jerarquía de control", a: "Inherente, pasivo, activo y procedimental" },
-            { q: "En un diagrama de corbatín, ¿qué elemento central representa el momento exacto en el que se pierde el control sobre el peligro y comienza la cadena del incidente?", a: "El Evento iniciador." }
-        ]
+      "Intercambio de calor": [
+        { q: "Bajo condiciones comparables, este arreglo suele requerir menos área de transferencia que el paralelo:", a: "Arreglo en contracorriente" },
+        { q: "Mencione la fuerza motriz para el intercambio de calor", a: "La fuerza motriz para el intercambio de calor es la diferencia de temperatura" },
+        { q: "Explique por qué comparar solo temperaturas de salida no siempre es suficiente para concluir cuál corrida transfirió más calor.", a: "Porque también importan el caudal másico y el calor específico; un mayor cambio de temperatura no implica necesariamente mayor calor total transferido." },
+        { q: "Explique bajo qué condiciones es posible que la temperatura de salida del fluido frío de un intercambiador de calor sea mayor que la de entrada del fluido caliente", a: "Esto es imposible, ya que se incumpliría la segunda ley de la termodinámica" },
+        { q: "La principal razón física por la que paralelo y contracorriente no se comportan igual es esta:", a: "La distribución de la diferencia de temperatura a lo largo del intercambiador, o la fuerza impulsora térmica." }
+      ],
+      "Caída de presión": [
+        { q: "¿De qué factores depende el factor de fricción en el régimen turbulento?", a: "De la aspereza relativa y del número de Reynolds" },
+        { q: "Dos tramos de tubería del mismo diámetro están conectados en serie. Uno es liso y el otro rugoso. Si el caudal es el mismo, ¿cuál contribuye más a la pérdida total?", a: "El tubo más rugoso contribuye más a la pérdida de carga" },
+        { q: "¿Qué sucede con la caída de presión si se duplica la longitud de la tubería?", a: "La caída de presión debe aumentar de manera lineal" },
+        { q: "¿Cómo afecta el diámetro interno de la tubería a la caída de presión, si el caudal and la longitud se mantienen constante?", a: "Aumenta drásticamente al disminuir el diámetro, ya que es inversamente proporcional a la quinta potencia del diámetro interno." },
+        { q: "¿Qué diagrama se utiliza para encontrar el factor de fricción en función del número de Reynolds y la rugosidad relativa?", a: "Diagrama de Moody" }
+      ],
+      "Caudalímetros": [
+        { q: "En el medidor de Venturi, ¿en que posición se colocan las tomas de presión para calcular el caudal?", a: "Se colocan a la entrada del instrumento y en la garganta." },
+        { q: "¿El tubo de Pitot mide el caudal volumétrico total en la tubería de forma directa?", a: "Falso, solo el rotámetro lo hace de forma directa." },
+        { q: "Mencione los 3 tipos, por principio de funcionamiento, de medidores de flujo estudiados en la práctica", a: "Sonda de velocidad, de carga y área variable." },
+        { q: "¿Cuál es el principio de funcionamiento de los medidores de carga variable?", a: "Funcionan a partir de la caída de presión que ocurre al estrangular el flujo" },
+        { q: "Explique por qué los medidores de orificio y tobera presentan una peor recuperación de la presión en comparación con un medidor de Venturi", a: "Por la geometría gradual de la sección convergente y divergente, la caída de presión permanente del Venturi es menor." }
+      ],
+      "Viscosidad": [
+        { q: "Defina viscosidad técnicamente", a: "La viscosidad es una medida de la fricción interna que presenta un fluido; por lo tanto determina su resistencia al movimiento o deformación" },
+        { q: "Durante una medición con viscosímetro rotacional, se observa que el esfuerzo cortante no es proporcional a la velocidad de deformación. ¿Qué tipo de fluido se tiene?", a: "Se trata de un fluido no newtoniano" },
+        { q: "En un fluido con esfuerzo cortante inicial (de fluencia), el comportamiento posterior es siempre estrictamente Newtoniano. ¿Verdadero o Falso?", a: "Falso. Existen plásticos de Bingham (lineales), pero también modelos de Herschel-Bulkley que son pseudoplásticos o dilatantes." },
+        { q: "Cómo se caracteriza a un fluido cuya viscosidad aumenta con el tiempo", a: "Reopéctico" },
+        { q: "Especifique la condición que permite determinar si la lectura de la variable de respuesta medida es confiable cuando se utiliza el viscosímetro rotacional Brookfield", a: "El % de torque debe estar entre un 10 y un 100 %" }
+      ],
+      "Bombas centrífugas": [
+        { q: "Mencione las 3 partes principales de una bomba centrífuga", a: "Eje, carcasa o voluta e impulsor" },
+        { q: "Describa la información que es posible conocer de una bomba centrífuga con el código 1 x 1 ½ - 8", a: "El código nos indica 1 pulgada de descarga, 1 ½ pulgadas de succión y hasta 8 pulgadas de diámetro del impulsor admisible" },
+        { q: "¿Qué son los puntos de máxima eficiencia y cómo se determinan?", a: "Son los puntos de caudal (caudal de diseño) y de potencia a la mayor eficiencia de la bomba." },
+        { q: "Explique a qué se refiere el término NPSH_R y NPSH_A.", a: "NPSH_R es la energía mínima requerida para evitar cavitación (la da el fabricante). NPSH_A es la energía disponible en la succión (la determina el usuario mediante balance de energía)." },
+        { q: "Explique cómo se obtiene el punto de operación de una bomba centrífuga", a: "Se grafica la curva característica de la bomba (H vs Q) y la curva del sistema. El punto de intersección corresponde al caudal y cabeza real entregados." }
+      ],
+      "Agitación": [
+        { q: "Explique en qué consiste el principio de escalamiento por similitud geométrica", a: "Consiste en que las dimensiones mantengan la razón del sistema de referencia" },
+        { q: "Bajo una misma velocidad de agitación y diámetro, ¿cuál, entre un agitador de aspas rectas y uno de aspas inclinadas tendrá un número de potencia menor?", a: "El de aspas inclinadas tiene un perfil que denota un menor coeficiente de resistencia" },
+        { q: "Explique por qué las mamparas impiden la formación del vórtice", a: "Porque transforman la componente tangencial del flujo en una componente vertical o axial" },
+        { q: "Justifique por qué, para un mismo agitador y condiciones, el número de potencia es mayor cuando hay presencia de deflectores", a: "Al haber deflectores se debe vencer la resistencia que estos presentan, requiriendo más potencia." },
+        { q: "¿Por qué la velocidad del tanque escalado es siempre menor que la del tanque de referencia?", a: "Porque depende del factor de escala (R). Incluso si el exponente es 1, la relación es n2 = n1/R. Como R > 1, n2 siempre será menor, evitando que los requerimientos de potencia se eléven." }
+      ],
+      "Calderas": [
+        { q: "¿Cuál es la diferencia entre un tratamiento interno y externo realizado a aguas de calderas?", a: "Interno: se realiza al agua dentro de la caldera. Externo: se realiza al agua antes de su ingreso." },
+        { q: "¿Cuál es la función del economizador?", a: "En esta unidad los gases de chimenea se utilizan para precalentar las corrientes que ingresan a la caldera" },
+        { q: "¿Cómo se genera vapor sobrecalentado en una caldera acuotubular?", a: "El vapor saturado se recircula por esta unidad para ponerla en contacto con los gases calientes y generar vapor sobrecalentado" },
+        { q: "Mencione los dos mecanismos de corrosión y su impacto en las propiedades del material.", a: "Corrosión generalizada (por zonas) o localizada (por picadura), ambas afectan la resistencia del material." },
+        { q: "Describa el impacto de las incrustaciones desde una perspectiva de intercambio de calor.", a: "Tienen menor conductividad térmica y reducen el área de intercambio. Para mantener la transferencia, se debe aumentar el delta de temperatura, consumiendo más combustible." }
+      ],
+      "Seguridad industrial": [
+        { q: "Mencione 2 peligros relacionados a las propiedades de las sustancias", a: "Toxicidad, Reactividad, Inflamabilidad, Riesgo biológico" },
+        { q: "Explique que es una medida preventiva y una medida de mitigación", a: "Las preventivas frenan la evolución de un accidente. Las de mitigación buscan disminuir las consecuencias." },
+        { q: "A qué se refiere cuando se habla de estrategias de seguridad pasivas y activas", a: "Las pasivas no necesitan del suceso para funcionar. Las activas entran en funcionamiento solo cuando ocurre el suceso" },
+        { q: "Mencione los 4 niveles de la jerarquía de control", a: "Inherente, pasivo, activo y procedimental" },
+        { q: "En un diagrama de corbatín, ¿qué elemento central representa el momento exacto en el que se pierde el control sobre el peligro y comienza la cadena del incidente?", a: "El Evento iniciador." }
+      ]
     };
 
     const POINTS_VALUES = [];
@@ -1148,13 +1200,13 @@
         const gain = this.ctx.createGain();
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        
+
         osc.frequency.setValueAtTime(600, this.ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.1);
-        
+
         gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
-        
+
         osc.start();
         osc.stop(this.ctx.currentTime + 0.1);
       }
@@ -1166,12 +1218,12 @@
         const gain = this.ctx.createGain();
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        
+
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(800, this.ctx.currentTime);
         gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
-        
+
         osc.start();
         osc.stop(this.ctx.currentTime + 0.05);
       }
@@ -1183,14 +1235,14 @@
         const gain = this.ctx.createGain();
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        
+
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(120, this.ctx.currentTime);
         osc.frequency.linearRampToValueAtTime(280, this.ctx.currentTime + 0.07);
-        
+
         gain.gain.setValueAtTime(0.03, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.07);
-        
+
         osc.start();
         osc.stop(this.ctx.currentTime + 0.07);
       }
@@ -1205,13 +1257,13 @@
           const gain = this.ctx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, now + index * 0.08);
-          
+
           gain.gain.setValueAtTime(0.12, now + index * 0.08);
           gain.gain.exponentialRampToValueAtTime(0.005, now + index * 0.08 + 0.35);
-          
+
           osc.connect(gain);
           gain.connect(this.ctx.destination);
-          
+
           osc.start(now + index * 0.08);
           osc.stop(now + index * 0.08 + 0.4);
         });
@@ -1224,23 +1276,23 @@
         const osc1 = this.ctx.createOscillator();
         const osc2 = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        
+
         osc1.type = 'sawtooth';
         osc2.type = 'triangle';
-        
+
         osc1.frequency.setValueAtTime(140, now);
         osc1.frequency.linearRampToValueAtTime(75, now + 0.45);
-        
+
         osc2.frequency.setValueAtTime(143, now);
         osc2.frequency.linearRampToValueAtTime(78, now + 0.45);
-        
+
         gain.gain.setValueAtTime(0.18, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
-        
+
         osc1.connect(gain);
         osc2.connect(gain);
         gain.connect(this.ctx.destination);
-        
+
         osc1.start();
         osc2.start();
         osc1.stop(now + 0.5);
@@ -1271,7 +1323,7 @@
         this.resize();
         this.particles = [];
         this.active = true;
-        
+
         for (let i = 0; i < 120; i++) {
           this.particles.push({
             x: Math.random() * this.canvas.width,
@@ -1341,7 +1393,7 @@
     const gridEl = document.getElementById('jeopardy-grid');
     const modalEl = document.getElementById('question-modal');
     const rulesModalEl = document.getElementById('rules-modal');
-    
+
     // Elementos del Modal
     const modalQTag = document.getElementById('modal-q-tag');
     const modalCategoryTitle = document.getElementById('modal-category-title');
@@ -1350,19 +1402,19 @@
     const timerNumber = document.getElementById('timer-number');
     const modalTurnIndicator = document.getElementById('modal-turn-indicator');
     const modalTurnTeamName = document.getElementById('modal-turn-team-name');
-    
+
     const btnTimerPause = document.getElementById('btn-timer-pause');
     const btnTimerAdd = document.getElementById('btn-timer-add');
     const btnTimerRebote = document.getElementById('btn-timer-rebote');
     const btnShowAnswer = document.getElementById('btn-show-answer');
-    
+
     const modalAnswerSection = document.getElementById('modal-answer-section');
     const modalAnswerText = document.getElementById('modal-answer-text');
     const teamAssignSelect = document.getElementById('team-assign-select');
     const btnAssignPoints = document.getElementById('btn-assign-points');
     const btnCloseQuestion = document.getElementById('btn-close-question');
     const btnCancelModal = document.getElementById('btn-cancel-modal');
-    
+
     const pointsRevealWrapper = document.getElementById('points-reveal-wrapper');
     const pointsSlotDisplay = document.getElementById('points-slot-display');
     const pointsDestText = document.getElementById('points-dest-text');
@@ -1379,7 +1431,7 @@
     // ==========================================
     // 🛠️ MÉTODOS DE INICIALIZACIÓN Y RENDERIZADO
     // ==========================================
-    
+
     function renderScoreboard() {
       scoreboardEl.innerHTML = '';
       for (let i = 0; i < 10; i++) {
@@ -1405,7 +1457,7 @@
           const newName = e.target.textContent.trim() || `Equipo ${i + 1}`;
           e.target.textContent = newName;
           teamNames[i] = newName;
-          updateAssignDropdown(); 
+          updateAssignDropdown();
         });
         nameSpan.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') {
@@ -1435,7 +1487,7 @@
     // Renderiza el tablero de forma estrictamente simétrica (8 columnas x 5 filas)
     function renderBoard() {
       gridEl.innerHTML = '';
-      
+
       // Fila 0: Cabeceras de categorías
       for (let c = 0; c < 8; c++) {
         const header = document.createElement('div');
@@ -1454,7 +1506,7 @@
           btn.className = 'grid-btn';
           btn.id = `btn-${c}-${r}`;
           btn.innerHTML = `<span class="btn-index">P${r + 1}</span>`;
-          
+
           if (playedQuestions.has(`${c}-${r}`)) {
             btn.classList.add('played');
           } else {
@@ -1485,7 +1537,7 @@
       soundSynth.playClick();
       currentCol = col;
       currentRow = row;
-      
+
       isTimerPaused = false;
       btnTimerPause.textContent = "Pausar";
       btnTimerPause.disabled = false;
@@ -1493,7 +1545,7 @@
       btnTimerRebote.disabled = false;
       btnShowAnswer.disabled = false;
       btnCancelModal.disabled = false;
-      
+
       modalAnswerSection.style.display = 'none';
       pointsRevealWrapper.style.display = 'none';
       btnShowAnswer.style.display = 'block';
@@ -1502,7 +1554,7 @@
       btnAssignPoints.style.display = 'block';
       btnCloseQuestion.style.display = 'none';
       teamAssignSelect.disabled = false;
-      
+
       if (confettiEffect) confettiEffect.stop();
 
       const categoryName = categories[col];
@@ -1511,7 +1563,7 @@
       modalCategoryTitle.textContent = categoryName;
       modalQuestionText.textContent = qData.q;
       modalAnswerText.textContent = qData.a;
-      
+
       updateAssignDropdown();
 
       // Encontrar el equipo destacado en el marcador
@@ -1535,7 +1587,7 @@
         if (!isTimerPaused) {
           timerVal--;
           updateTimerDisplay();
-          
+
           if (timerVal <= 10 && timerVal > 0) {
             soundSynth.playTick();
           }
@@ -1551,7 +1603,7 @@
 
     function updateTimerDisplay() {
       timerNumber.textContent = timerVal;
-      
+
       const maxCirc = 251.32;
       const offset = maxCirc - (timerVal / 60) * maxCirc;
       timerProgressBar.style.strokeDashoffset = offset;
@@ -1583,7 +1635,7 @@
     // Mecánica de Rebote (Robo de Turno)
     btnTimerRebote.addEventListener('click', () => {
       if (btnTimerRebote.disabled) return;
-      
+
       // 1. Pausar el temporizador actual inmediatamente
       clearInterval(timerInterval);
       soundSynth.playClick();
@@ -1596,7 +1648,7 @@
       btnCancelModal.disabled = true;
 
       const cards = document.querySelectorAll('.team-card');
-      
+
       // Encontrar el equipo que tiene el turno original (para excluirlo)
       let currentActiveIndex = -1;
       cards.forEach((card, idx) => {
@@ -1626,7 +1678,7 @@
       function runRoulette() {
         // Apagar todos
         cards.forEach(card => card.classList.remove('highlighted'));
-        
+
         // Encender el actual
         const currentCardIndex = (startIndex + step) % 10;
         cards[currentCardIndex].classList.add('highlighted');
@@ -1641,7 +1693,7 @@
           // Asegurar que el ganador definitivo queda seleccionado y limpio
           cards.forEach(card => card.classList.remove('highlighted'));
           cards[winnerIndex].classList.add('highlighted');
-          
+
           // Reactivar transiciones suaves
           scoreboardEl.classList.remove('roulette-active');
           soundSynth.playSuccess();
@@ -1675,7 +1727,7 @@
               if (!isTimerPaused) {
                 timerVal--;
                 updateTimerDisplay();
-                
+
                 if (timerVal <= 10 && timerVal > 0) {
                   soundSynth.playTick();
                 }
@@ -1696,7 +1748,7 @@
 
     btnShowAnswer.addEventListener('click', () => {
       soundSynth.playClick();
-      clearInterval(timerInterval); 
+      clearInterval(timerInterval);
       document.getElementById('timer-container').style.display = 'none';
       modalAnswerSection.style.display = 'flex';
     });
@@ -1707,39 +1759,39 @@
 
     btnAssignPoints.addEventListener('click', () => {
       soundSynth.playClick();
-      
+
       btnAssignPoints.style.display = 'none';
-      btnCancelModal.style.display = 'none'; 
+      btnCancelModal.style.display = 'none';
       teamAssignSelect.disabled = true;
 
       const targetTeamId = parseInt(teamAssignSelect.value, 10);
       const teamNameTarget = teamNames[targetTeamId];
-      
+
       const randomPoints = POINTS_VALUES[Math.floor(Math.random() * POINTS_VALUES.length)];
-      
+
       pointsRevealWrapper.style.display = 'flex';
       pointsDestText.textContent = `Asignando puntos a: ${teamNameTarget}`;
 
       let currentStep = 0;
       const totalSteps = 22;
-      let delay = 50; 
+      let delay = 50;
 
       function triggerRoll() {
         if (currentStep < totalSteps) {
           const tempVal = POINTS_VALUES[Math.floor(Math.random() * POINTS_VALUES.length)];
           const sign = tempVal > 0 ? '+' : '';
-          
+
           pointsSlotDisplay.textContent = `${sign}${tempVal}`;
           pointsSlotDisplay.className = `points-badge-large ${tempVal > 0 ? 'positive-roll' : 'negative-roll'}`;
-          
+
           soundSynth.playSpin();
           currentStep++;
-          delay += 12; 
+          delay += 12;
           setTimeout(triggerRoll, delay);
         } else {
           const finalSign = randomPoints > 0 ? '+' : '';
           pointsSlotDisplay.textContent = `${finalSign}${randomPoints}`;
-          
+
           if (randomPoints > 0) {
             pointsSlotDisplay.className = "points-badge-large positive-final";
             soundSynth.playSuccess();
@@ -1766,8 +1818,8 @@
     function animateScoreCounter(teamId, startScore, endScore) {
       const scoreElement = document.getElementById(`score-${teamId}`);
       if (!scoreElement) return;
-      
-      const duration = 850; 
+
+      const duration = 850;
       const startTime = performance.now();
 
       function update(now) {
@@ -1775,9 +1827,9 @@
         const progress = Math.min(elapsed / duration, 1);
         const easeProgress = progress * (2 - progress);
         const currentScore = Math.round(startScore + (endScore - startScore) * easeProgress);
-        
+
         scoreElement.textContent = currentScore;
-        
+
         if (progress < 1) {
           requestAnimationFrame(update);
         } else {
@@ -1791,7 +1843,7 @@
     btnCloseQuestion.addEventListener('click', () => {
       soundSynth.playClick();
       playedQuestions.add(`${currentCol}-${currentRow}`);
-      
+
       const boardBtn = document.getElementById(`btn-${currentCol}-${currentRow}`);
       if (boardBtn) {
         boardBtn.classList.add('played');
@@ -1861,7 +1913,7 @@
       if (confirm("¿Estás seguro de que deseas reiniciar todo el juego?")) {
         playedQuestions.clear();
         scores.fill(0);
-        
+
         document.querySelectorAll('.team-card').forEach(card => {
           card.classList.remove('highlighted');
         });
@@ -1911,7 +1963,7 @@
       function runRoulette() {
         // Apagar todos
         cards.forEach(card => card.classList.remove('highlighted'));
-        
+
         // Encender el actual
         const currentCardIndex = (startIndex + step) % 10;
         cards[currentCardIndex].classList.add('highlighted');
@@ -1926,10 +1978,10 @@
           // Asegurar que el ganador definitivo queda seleccionado y limpio
           cards.forEach(card => card.classList.remove('highlighted'));
           cards[winnerIndex].classList.add('highlighted');
-          
+
           // Reactivar transiciones suaves de hover
           scoreboardEl.classList.remove('roulette-active');
-          
+
           soundSynth.playSuccess();
           btnDrawTurn.disabled = false;
         }
@@ -1944,10 +1996,10 @@
     window.addEventListener('DOMContentLoaded', () => {
       renderScoreboard();
       renderBoard();
-      
+
       const canvas = document.getElementById('confetti-canvas');
       confettiEffect = new ConfettiEffect(canvas);
-      
+
       window.addEventListener('resize', () => {
         if (confettiEffect && confettiEffect.active) {
           confettiEffect.resize();
@@ -1965,4 +2017,5 @@
 
   </script>
 </body>
+
 </html>
